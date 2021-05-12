@@ -1,0 +1,11 @@
+<resources>
+
+    <style name="Theme.QuickSDK.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.QuickSDK.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.QuickSDK.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>
