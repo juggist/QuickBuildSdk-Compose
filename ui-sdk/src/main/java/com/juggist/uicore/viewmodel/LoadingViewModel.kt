@@ -9,8 +9,8 @@ class StatusInfo(
     val statusVisiable: Boolean = false,
     val imgRes: Int = R.mipmap.ic_empty_data,
     val tip: String = "暂无数据",
-    val btnStr: String = "重试"
-
+    val btnStr: String = "重试",
+    val btnVisiable:Boolean = true
 )
 
 open class LoadingViewModel : NavViewModel() {

@@ -65,12 +65,13 @@ abstract class LoadingVMActivity<VM : LoadingViewModel>(
             Spacer(modifier = Modifier.height(10.dp))
             Text(viewModel.statusInfo.tip, fontSize = 18.sp)
             Spacer(modifier = Modifier.height(10.dp))
-            Button(
-                onClick = { startLoading() },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Red)
-            ) {
-                Text(viewModel.statusInfo.btnStr, fontSize = 18.sp, color = White)
-            }
+            if(viewModel.statusInfo.btnVisiable)
+                Button(
+                    onClick = { startLoading() },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Red)
+                ) {
+                    Text(viewModel.statusInfo.btnStr, fontSize = 18.sp, color = White)
+                }
         }
     }
 

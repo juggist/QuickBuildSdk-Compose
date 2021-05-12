@@ -47,10 +47,10 @@ abstract class RefreshVMActivity<VM : RefreshViewModel>(
                     autoRefresh()
                 }
                 setHeaderHeight(100f)
-                setEnableRefresh(true)
+                setEnableRefresh(viewModel.refreshEnable)
                 setRefreshHeader(ClassicsHeader(it))
                 setFooterHeight(100f)
-                setEnableLoadMore(true)
+                setEnableLoadMore(viewModel.loadMoreEnable)
                 setRefreshFooter(ClassicsFooter(it))
                 setRefreshContent(
                     //添加内容视图
