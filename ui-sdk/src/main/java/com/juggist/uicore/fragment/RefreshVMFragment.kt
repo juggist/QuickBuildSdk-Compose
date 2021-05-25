@@ -2,10 +2,11 @@ package com.juggist.uicore.fragment
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.viewinterop.AndroidView
-import com.juggist.uicore.activity.AUTO_TYPE
+import com.juggist.uicore.activity.AutoType
 import com.juggist.uicore.viewmodel.RefreshViewModel
 import com.juggist.uicore.viewmodel.StatusInfo
 import com.scwang.smart.refresh.footer.ClassicsFooter
@@ -21,10 +22,10 @@ abstract class RefreshVMFragment<VM : RefreshViewModel>(
     private val contentVisiable: Boolean = true
     /**是否显示内容区域**/
     ,
-    private val autoType: AUTO_TYPE = AUTO_TYPE.REFRESH
+    private val autoType: AutoType = AutoType.REFRESH
     /**自动加载类型**/
 ) : LoadingVMFragment<VM>(
-    autoLoading = autoLoading && autoType == AUTO_TYPE.LOADING
+    autoLoading = autoLoading && autoType == AutoType.LOADING
     /**自动加载&loading模式**/
     , contentVisiable = contentVisiable
 ) {
@@ -33,17 +34,20 @@ abstract class RefreshVMFragment<VM : RefreshViewModel>(
 
     @Composable
     override fun LoadingChildView() {
+        val refreshResult = viewModel.refreshResult.observeAsState(initial = RefreshViewModel.RefreshResult()).value
+        val refreshEnable = viewModel.refreshEnable.observeAsState(initial = true).value
+        val loadMoreEnable = viewModel.loadMoreEnable.observeAsState(initial = true).value
         AndroidView(factory = {
             SmartRefreshLayout(it).apply {
                 refreshLayout = this
-                if (autoLoading && autoType == AUTO_TYPE.REFRESH) {
+                if (autoLoading && autoType == AutoType.REFRESH) {
                     autoRefresh()
                 }
                 setHeaderHeight(100f)
-                setEnableRefresh(viewModel.refreshEnable)
+                setEnableRefresh(refreshEnable)
                 setRefreshHeader(ClassicsHeader(it))
                 setFooterHeight(100f)
-                setEnableLoadMore(viewModel.loadMoreEnable)
+                setEnableLoadMore(loadMoreEnable)
                 setRefreshFooter(ClassicsFooter(it))
                 setRefreshContent(
                     //添加内容视图

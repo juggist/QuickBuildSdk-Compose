@@ -18,7 +18,7 @@ abstract class ListRefreshVMActivity<VM : ListRefreshViewModel,DataType>(
     private val contentVisiable: Boolean = true
     /**是否显示内容区域**/
     ,
-    private val autoType: AUTO_TYPE = AUTO_TYPE.REFRESH
+    private val autoType: AutoType = AutoType.REFRESH
     /**自动加载类型**/
 ) : RefreshVMActivity<VM>(
     autoLoading = autoLoading,

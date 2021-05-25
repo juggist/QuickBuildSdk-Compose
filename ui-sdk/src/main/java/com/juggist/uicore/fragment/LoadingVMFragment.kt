@@ -9,6 +9,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,10 +32,16 @@ abstract class LoadingVMFragment<VM : LoadingViewModel>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.apply {
-            autoLoading = this@LoadingVMFragment.autoLoading
-            contentVisiable = this@LoadingVMFragment.contentVisiable
-            if (autoLoading)
-                startLoading(contentVisiable = contentVisiable)
+            if (this@LoadingVMFragment.autoLoading){
+                showLoading()
+                startLoading(contentVisiable = this@LoadingVMFragment.contentVisiable)
+            }
+            else
+                hideLoading()
+            if(this@LoadingVMFragment.contentVisiable)
+                showContent()
+            else
+                hideContent()
         }
     }
 
@@ -46,32 +53,33 @@ abstract class LoadingVMFragment<VM : LoadingViewModel>(
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            if (viewModel.contentVisiable)
+            if (viewModel.contentVisiable.observeAsState(initial = true).value)
                 LoadingChildView()
-            if (viewModel.loadingVisiable)
+            if (viewModel.loadingVisiable.observeAsState(initial = false).value)
                 LoadingView()
-            if (viewModel.statusInfo.statusVisiable)
-                StatusView()
+            val statusInfo = viewModel.statusInfo.observeAsState(initial = StatusInfo()).value
+            if (statusInfo.statusVisiable)
+                StatusView(statusInfo)
         }
     }
 
     @Composable
-    private fun StatusView() {
+    private fun StatusView(statusInfo: StatusInfo) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
-                painter = rememberGlidePainter(request = viewModel.statusInfo.imgRes),
+                painter = rememberGlidePainter(request = statusInfo.imgRes),
                 contentDescription = "占位图",
                 modifier = Modifier.size(180.dp)
             )
             Spacer(modifier = Modifier.height(10.dp))
-            Text(viewModel.statusInfo.tip, fontSize = 18.sp)
+            Text(statusInfo.tip, fontSize = 18.sp)
             Spacer(modifier = Modifier.height(10.dp))
-            if (viewModel.statusInfo.btnVisiable)
+            if(statusInfo.btnVisiable)
                 Button(
                     onClick = { startLoading() },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
                 ) {
-                    Text(viewModel.statusInfo.btnStr, fontSize = 18.sp, color = White)
+                    Text(statusInfo.btnStr, fontSize = 18.sp, color = White)
                 }
         }
     }

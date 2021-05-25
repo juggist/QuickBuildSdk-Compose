@@ -24,15 +24,15 @@ abstract class ListVMFragment<VM : ListViewModel, DataType> :
 
     }
 
-    override fun startLoadMoreAction() {
+    final override fun startLoadMoreAction() {
         //空实现
     }
 
-    override fun startLoadingAction() {
+    final override fun startLoadingAction() {
         //空实现
     }
 
-    override fun startRefreshAction() {
+    final override fun startRefreshAction() {
         //空实现
     }
 

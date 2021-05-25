@@ -1,8 +1,7 @@
 package com.juggist.uicore.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.juggist.uicore.R
 
 class StatusInfo(
@@ -10,32 +9,40 @@ class StatusInfo(
     val imgRes: Int = R.mipmap.ic_empty_data,
     val tip: String = "暂无数据",
     val btnStr: String = "重试",
-    val btnVisiable:Boolean = true
+    val btnVisiable: Boolean = true
 )
 
 open class LoadingViewModel : NavViewModel() {
-    var autoLoading by mutableStateOf(true)
-    var statusInfo by mutableStateOf(StatusInfo())
-    var loadingVisiable by mutableStateOf(false)
-    var contentVisiable by mutableStateOf(true)
+    private val _autoLoading = MutableLiveData(true)
+    val autoLoading: LiveData<Boolean>
+        get() = _autoLoading
+    private val _statusInfo = MutableLiveData(StatusInfo())
+    val statusInfo: LiveData<StatusInfo>
+        get() = _statusInfo
+    private val _loadingVisiable = MutableLiveData(false)
+    val loadingVisiable: LiveData<Boolean>
+        get() = _loadingVisiable
+    private val _contentVisiable = MutableLiveData(true)
+    val contentVisiable: LiveData<Boolean>
+        get() = _contentVisiable
 
     fun showLoading() {
-        loadingVisiable = true
+        _loadingVisiable.postValue(true)
     }
 
     fun hideLoading() {
-        loadingVisiable = false
+        _loadingVisiable.postValue(false)
     }
 
     fun showContent() {
-        contentVisiable = true
+        _contentVisiable.postValue(true)
     }
 
     fun hideContent() {
-        contentVisiable = false
+        _contentVisiable.postValue(false)
     }
 
-    fun updateStatusInfo(statusInfo: StatusInfo){
-        this.statusInfo = statusInfo
+    fun updateStatusInfo(statusInfo: StatusInfo) {
+        _statusInfo.postValue(statusInfo)
     }
 }
