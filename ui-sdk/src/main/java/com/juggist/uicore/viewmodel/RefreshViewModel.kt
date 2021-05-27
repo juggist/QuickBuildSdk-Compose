@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 open class RefreshViewModel : LoadingViewModel() {
-    var firstLaunch = true
     private val _refreshEnable = MutableLiveData(true)
     val refreshEnable: LiveData<Boolean>
         get() = _refreshEnable

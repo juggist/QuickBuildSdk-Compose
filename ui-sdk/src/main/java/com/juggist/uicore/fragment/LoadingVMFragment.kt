@@ -53,11 +53,10 @@ abstract class LoadingVMFragment<VM : LoadingViewModel>(
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            if (viewModel.contentVisiable.observeAsState(initial = true).value)
-                LoadingChildView()
-            if (viewModel.loadingVisiable.observeAsState(initial = false).value)
+            LoadingChildView(viewModel.contentVisiable.observeAsState().value!!)
+            if (viewModel.loadingVisiable.observeAsState().value!!)
                 LoadingView()
-            val statusInfo = viewModel.statusInfo.observeAsState(initial = StatusInfo()).value
+            val statusInfo = viewModel.statusInfo.observeAsState().value!!
             if (statusInfo.statusVisiable)
                 StatusView(statusInfo)
         }
@@ -127,7 +126,7 @@ abstract class LoadingVMFragment<VM : LoadingViewModel>(
      * 派生类自己实现视图
      */
     @Composable
-    abstract fun LoadingChildView()
+    abstract fun LoadingChildView(show: Boolean)
 
     abstract fun startLoadingAction()
 }

@@ -42,7 +42,7 @@ abstract class NavBarVMActivity<VM : NavViewModel>(private val navVisiable: Bool
                 .fillMaxSize()
                 .background(color = Color(0xffffff))
         ) {
-            if (viewModel.navVisiable.observeAsState(initial = true).value)
+            if (viewModel.navVisiable.observeAsState().value!!)
                 NavBarView()
             NavBarChildView()
         }

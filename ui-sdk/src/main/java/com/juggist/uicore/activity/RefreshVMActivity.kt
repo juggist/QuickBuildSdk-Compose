@@ -1,9 +1,10 @@
 package com.juggist.uicore.activity
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.viewinterop.AndroidView
@@ -42,12 +43,15 @@ abstract class RefreshVMActivity<VM : RefreshViewModel>(
     , contentVisiable = contentVisiable
 ) {
 
-    @SuppressLint("RememberReturnType")
     @Composable
-    override fun LoadingChildView() {
-        val refreshResult = viewModel.refreshResult.observeAsState(initial = RefreshViewModel.RefreshResult()).value
-        val refreshEnable = viewModel.refreshEnable.observeAsState(initial = true).value
-        val loadMoreEnable = viewModel.loadMoreEnable.observeAsState(initial = true).value
+    override fun LoadingChildView(show: Boolean) {
+        //第一次启动activity，防止某些动作重复
+        val firstLaunchActivity = remember { mutableStateOf(true) }
+        if(!show)
+            return
+        val refreshResult = viewModel.refreshResult.observeAsState().value!!
+        val refreshEnable = viewModel.refreshEnable.observeAsState().value!!
+        val loadMoreEnable = viewModel.loadMoreEnable.observeAsState().value!!
         AndroidView(factory = {
             SmartRefreshLayout(it).apply {
                 setHeaderHeight(100f)
@@ -70,7 +74,7 @@ abstract class RefreshVMActivity<VM : RefreshViewModel>(
                 setOnLoadMoreListener {
                     startLoadMoreAction()
                 }
-                if (autoLoading && autoType == AutoType.REFRESH && viewModel.firstLaunch) {
+                if (autoLoading && autoType == AutoType.REFRESH && firstLaunchActivity.value) {
                     lifecycleScope.launch{
                         delay(500)
                         autoRefresh()
@@ -78,8 +82,8 @@ abstract class RefreshVMActivity<VM : RefreshViewModel>(
                 }
             }
         }, modifier = Modifier.fillMaxSize(), update = {
-            if(viewModel.firstLaunch)
-                viewModel.firstLaunch = false
+            if(firstLaunchActivity.value)
+                firstLaunchActivity.value = false
             if(refreshResult.refreshType){
                 it.finishRefresh(0, refreshResult.success, refreshResult.noMoreData)
             }else{
